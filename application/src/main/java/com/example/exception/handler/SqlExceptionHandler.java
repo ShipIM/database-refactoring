@@ -1,5 +1,6 @@
 package com.example.exception.handler;
 
+import com.example.dto.error.ErrorResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -12,19 +13,25 @@ import java.util.Map;
 @RestControllerAdvice
 @RequiredArgsConstructor
 public class SqlExceptionHandler {
+
     private final Map<String, String> violationsMap;
 
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<Map<String, String>> handleDataIntegrityViolationException(
+    public ResponseEntity<ErrorResponse> handleDataIntegrityViolationException(
             DataIntegrityViolationException exception) {
 
-        String message = violationsMap.entrySet().stream()
+        var message = violationsMap.entrySet().stream()
                 .filter(entry -> exception.getMessage().contains(entry.getKey()))
                 .map(Map.Entry::getValue)
                 .findAny()
                 .orElse("Unexpected exception acquired");
 
-        return new ResponseEntity<>(Map.of("errors", message), HttpStatus.BAD_REQUEST);
+        ErrorResponse errorResponse = new ErrorResponse(
+                "400",
+                message
+        );
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
 }

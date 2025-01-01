@@ -14,4 +14,5 @@ public class ApplicationConfig {
                 "_user_pkey", "A user with such an email already exists"
         );
     }
+
 }

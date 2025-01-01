@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet id="19-12-2023--17-create-create-user-function" author="ShipIM">
+        <createProcedure>
+            CREATE
+            OR REPLACE FUNCTION create_user(
+              p_login TEXT,
+              p_birth_date DATE,
+              p_registration_date DATE,
+              p_password TEXT
+            ) RETURNS TABLE (login TEXT, birth_date DATE, registration_date DATE) AS $$
+            BEGIN
+
+            INSERT INTO _ user (login, birth_date, registration_date)
+            VALUES (p_login, p_birth_date, p_registration_date);
+
+            INSERT INTO password (user_login, password)
+            VALUES (p_login, p_password);
+
+            RETURN QUERY SELECT login, birth_date, registration_date
+                         FROM _user WHERE login = p_login;
+            END;
+            $$
+            LANGUAGE plpgsql;
+        </createProcedure>
+    </changeSet>
+</databaseChangeLog>

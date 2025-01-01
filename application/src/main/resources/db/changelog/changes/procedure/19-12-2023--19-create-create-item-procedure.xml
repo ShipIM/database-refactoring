@@ -5,20 +5,22 @@
                    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
     <changeSet id="19-12-2023--19-create-create-item-procedure" author="ShipIM">
         <createProcedure>
-            CREATE OR REPLACE PROCEDURE create_item(
+            CREATE
+            OR REPLACE PROCEDURE create_item(
               IN item_id INTEGER,
               IN name TEXT,
               IN properties JSONB,
               IN category TEXT
             ) AS $$
             BEGIN
-                INSERT INTO item (id, name, properties)
-                VALUES (item_id, name, properties);
+            INSERT INTO item (id, name, properties)
+            VALUES (item_id, name, properties);
 
-                INSERT INTO item_category (item_id, category)
-                VALUES (item_id, category);
+            INSERT INTO item_category (item_id, category)
+            VALUES (item_id, category);
             END;
-            $$ LANGUAGE plpgsql;
+            $$
+            LANGUAGE plpgsql;
         </createProcedure>
     </changeSet>
 </databaseChangeLog>

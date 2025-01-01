@@ -10,12 +10,12 @@
           <span class="itn">{{ itemName }}</span>
         </div>
         <div>
-          <input id="isFavourite" type="checkbox" @click="handleFavourite" />
+          <input id="isFavourite" type="checkbox" @click="handleFavourite"/>
           <label>Add to favoutite</label>
         </div>
       </td>
       <td colspan="2">
-        <personal-space-panel />
+        <personal-space-panel/>
       </td>
     </tr>
     <tr>
@@ -26,7 +26,7 @@
           <table>
             <text v-if="!this.isDependencies">There is no dependencies for this item</text>
             <div v-else>
-              <dependencies-table />
+              <dependencies-table/>
               <tr>
                 <div>
                   <text>
@@ -39,9 +39,11 @@
         </div>
 
         <div v-if="this.isDependencies">
-          <button :disabled="currentPageDependencies === 0" @click="handlePreviousDependencies" class="prev3">Previous</button>
+          <button :disabled="currentPageDependencies === 0" @click="handlePreviousDependencies" class="prev3">Previous
+          </button>
           <button :disabled="currentPageDependencies >= maximumPageDependencies - 1"
-                  @click="handleNextDependencies" class="next3">Next</button>
+                  @click="handleNextDependencies" class="next3">Next
+          </button>
         </div>
 
       </td>
@@ -50,14 +52,15 @@
         <table>
           <text v-if="!this.isLots">There is no active lots for this item</text>
           <div v-else>
-            <lots-table />
+            <lots-table/>
           </div>
         </table>
 
         <div v-if="this.isLots">
           <button :disabled="currentPageLots === 0" @click="handlePreviousLots" class="prev4">Previous</button>
           <button :disabled="currentPageLots >= maximumPageLots - 1"
-                  @click="handleNextLots" class="next4">Next</button>
+                  @click="handleNextLots" class="next4">Next
+          </button>
         </div>
 
       </td>
@@ -66,7 +69,7 @@
       </td>
     </tr>
 
-    
+
   </table>
 </template>
 
@@ -76,10 +79,9 @@ import dependenciesTable from "@/components/lots/dependencies-table"
 import lotsTable from "@/components/lots/lots-table"
 import chartPage from "@/components/lots/chart-page"
 
-import { computed } from "vue";
-import { router } from "@/router"
-import { getCookie } from "@/cookies";
-
+import {computed} from "vue";
+import {router} from "@/router"
+import {getCookie} from "@/cookies";
 
 
 export default {
@@ -131,7 +133,7 @@ export default {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + (getCookie("token") != null ? getCookie("token") : "")
           },
-          body: JSON.stringify({ "item_id": this.itemId })
+          body: JSON.stringify({"item_id": this.itemId})
         })
         return
       }
@@ -159,8 +161,8 @@ export default {
           'Accept': 'application/json'
         },
       })
-        .then((response) => response.json())
-        .then((data) => this.dependencies = data.content);
+          .then((response) => response.json())
+          .then((data) => this.dependencies = data.content);
     },
     handlePreviousDependencies() {
       if (this.currentPageDependencies > 0) {
@@ -177,8 +179,8 @@ export default {
           'Accept': 'application/json'
         },
       })
-        .then((response) => response.json())
-        .then((data) => this.dependencies = data.content);
+          .then((response) => response.json())
+          .then((data) => this.dependencies = data.content);
     },
 
     handleNextLots() {
@@ -194,8 +196,8 @@ export default {
           'Accept': 'application/json'
         },
       })
-        .then((response) => response.json())
-        .then((data) => this.lots = data.content);
+          .then((response) => response.json())
+          .then((data) => this.lots = data.content);
     },
     handlePreviousLots() {
       if (this.currentPageLots > 0) {
@@ -212,8 +214,8 @@ export default {
           'Accept': 'application/json'
         },
       })
-        .then((response) => response.json())
-        .then((data) => this.lots = data.content);
+          .then((response) => response.json())
+          .then((data) => this.lots = data.content);
     },
 
 
@@ -227,14 +229,14 @@ export default {
           'Accept': 'application/json'
         },
       })
-        .then((response) => response.json())
-        .then((data) => {
-          this.dependencies = data.content;
-          if (this.dependencies.length == 0) {
-            this.isDependencies = false
-          }
-          this.maximumPageDependencies = data.totalPages;
-        });
+          .then((response) => response.json())
+          .then((data) => {
+            this.dependencies = data.content;
+            if (this.dependencies.length == 0) {
+              this.isDependencies = false
+            }
+            this.maximumPageDependencies = data.totalPages;
+          });
 
       fetch(`http://localhost:8080/lots/${to.params.id}`, {
         method: 'GET',
@@ -242,14 +244,14 @@ export default {
           'Accept': 'application/json'
         },
       })
-        .then((response) => response.json())
-        .then((data) => {
-          this.lots = data.content;
-          if (this.lots.length == 0) {
-            this.isLots = false
-          }
-          this.maximumPageLots = data.totalPages;
-        });
+          .then((response) => response.json())
+          .then((data) => {
+            this.lots = data.content;
+            if (this.lots.length == 0) {
+              this.isLots = false
+            }
+            this.maximumPageLots = data.totalPages;
+          });
 
       fetch(`http://localhost:8080/items/${to.params.id}`, {
         method: 'GET',
@@ -257,10 +259,10 @@ export default {
           'Accept': 'application/json'
         },
       })
-        .then((response) => response.json())
-        .then((data) => {
-          this.itemName = data.name
-        });
+          .then((response) => response.json())
+          .then((data) => {
+            this.itemName = data.name
+          });
     }
   },
   mounted() {
@@ -270,14 +272,14 @@ export default {
         'Accept': 'application/json'
       },
     })
-      .then((response) => response.json())
-      .then((data) => {
-        this.dependencies = data.content;
-        if (this.dependencies.length == 0) {
-          this.isDependencies = false
-        }
-        this.maximumPageDependencies = data.totalPages;
-      });
+        .then((response) => response.json())
+        .then((data) => {
+          this.dependencies = data.content;
+          if (this.dependencies.length == 0) {
+            this.isDependencies = false
+          }
+          this.maximumPageDependencies = data.totalPages;
+        });
 
     fetch(`http://localhost:8080/lots/${this.itemId}`, {
       method: 'GET',
@@ -285,14 +287,14 @@ export default {
         'Accept': 'application/json'
       },
     })
-      .then((response) => response.json())
-      .then((data) => {
-        this.lots = data.content;
-        if (this.lots.length == 0) {
-          this.isLots = false
-        }
-        this.maximumPageLots = data.totalPages;
-      });
+        .then((response) => response.json())
+        .then((data) => {
+          this.lots = data.content;
+          if (this.lots.length == 0) {
+            this.isLots = false
+          }
+          this.maximumPageLots = data.totalPages;
+        });
 
 
     fetch(`http://localhost:8080/items/${this.itemId}`, {
@@ -302,12 +304,12 @@ export default {
         'Authorization': 'Bearer ' + (getCookie("token") != null ? getCookie("token") : "")
       },
     })
-      .then((response) => response.json())
-      .then((data) => {
-        this.itemName = data.name
-        var remember = document.getElementById("isFavourite");
-        remember.checked = data.is_favourite
-      });
+        .then((response) => response.json())
+        .then((data) => {
+          this.itemName = data.name
+          var remember = document.getElementById("isFavourite");
+          remember.checked = data.is_favourite
+        });
 
     fetch(`http://localhost:8080/items/selfprice/${this.itemId}`, {
       method: 'GET',
@@ -316,31 +318,39 @@ export default {
         'Authorization': 'Bearer ' + (getCookie("token") != null ? getCookie("token") : "")
       },
     })
-      .then((response) => response.json())
-      .catch(() => 
-        this.optimalSelfprice = "It's impossible to calculate selfprice"
-      )
-      .then((data) => {
-        this.optimalSelfprice = data
-      })
+        .then((response) => response.json())
+        .catch(() =>
+            this.optimalSelfprice = "It's impossible to calculate selfprice"
+        )
+        .then((data) => {
+          this.optimalSelfprice = data
+        })
   }
 }
 </script>
 
 <style scoped>
-@media (width < 877px) {
+@media (width < 877px
+
+) {
   #frame {
     width: 400px;
   }
 }
 
-@media (877px <=width < 1062px) {
+@media (877px <=width <
+
+1062px
+
+) {
   #frame {
     width: 600px;
   }
 }
 
-@media (1062px <=width) {
+@media (1062px <=width
+
+) {
   #frame {
     width: 800px;
   }
@@ -385,14 +395,17 @@ div.list-wrapper {
 #frame input {
   color: rgb(255, 255, 255);
 }
+
 .dep {
   color: rgb(0, 0, 0);
   padding-left: 5px;
 }
+
 #frame text {
   color: rgb(0, 0, 0);
   margin-top: 5px;
 }
+
 .next3 {
   background-color: black;
   color: white;
@@ -400,6 +413,7 @@ div.list-wrapper {
   border-radius: 4px;
   padding: 2px 10px;
 }
+
 .prev3 {
   background-color: black;
   color: white;
@@ -407,6 +421,7 @@ div.list-wrapper {
   border-radius: 4px;
   padding: 2px 10px;
 }
+
 .next4 {
   background-color: black;
   color: white;
@@ -415,6 +430,7 @@ div.list-wrapper {
   padding: 2px 10px;
   margin-top: 5px;
 }
+
 .prev4 {
   background-color: black;
   color: white;
@@ -423,14 +439,17 @@ div.list-wrapper {
   padding: 2px 10px;
   margin-top: 5px;
 }
+
 .name4 {
   color: rgb(0, 0, 0);
   padding-left: 5px;
 }
+
 .itn {
   color: rgb(0, 0, 0);
   padding-left: 5px;
 }
+
 #frame label {
   color: rgb(0, 153, 38);
   padding-left: 5px;

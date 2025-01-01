@@ -7,10 +7,12 @@
         <createProcedure>
             CREATE FUNCTION set_time_start() RETURNS trigger AS $$
             BEGIN
-                NEW.time_start := NOW()::date;
-                RETURN NEW;
+                NEW.time_start
+            := NOW()::date;
+            RETURN NEW;
             END;
-            $$ LANGUAGE plpgsql;
+            $$
+            LANGUAGE plpgsql;
         </createProcedure>
         <rollback>
             DROP FUNCTION set_time_start();
@@ -19,8 +21,9 @@
     <changeSet id="19-12-2023--13-create-set-time-start-trigger-2" author="ShipIM">
         <sql>
             CREATE TRIGGER set_time_start
-            BEFORE INSERT ON lot_time_information
-            FOR EACH ROW EXECUTE PROCEDURE set_time_start();
+                BEFORE INSERT
+                ON lot_time_information
+                FOR EACH ROW EXECUTE PROCEDURE set_time_start();
         </sql>
         <rollback>
             DROP TRIGGER set_time_start ON lot_time_information;

@@ -1,13 +1,13 @@
 <template>
   <tr @click="handleClick">
-    <td class="namee">{{itemName}}</td>
-    <td class="qualityy">{{itemQuality}}</td>
-    <td class="levell">{{itemLevel}}</td>
+    <td class="namee">{{ itemName }}</td>
+    <td class="qualityy">{{ itemQuality }}</td>
+    <td class="levell">{{ itemLevel }}</td>
   </tr>
 </template>
 
 <script>
-import { router } from '@/router';
+import {router} from '@/router';
 
 export default {
   props: {
@@ -24,7 +24,7 @@ export default {
   methods: {
     handleClick() {
       const itemId = this.itemId
-      router.push({ name: 'lots', params: { id: itemId }})
+      router.push({name: 'lots', params: {id: itemId}})
     }
   }
 }
@@ -39,6 +39,7 @@ export default {
   width: 50%;
   border-radius: 3px 0 0 3px;
 }
+
 .qualityy {
   background-color: rgb(0, 0, 0);
   border-style: solid;
@@ -47,6 +48,7 @@ export default {
   padding: 2px 5px;
   width: 20%;
 }
+
 .levell {
   background-color: rgb(0, 0, 0);
   border-style: solid;

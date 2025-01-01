@@ -1,12 +1,12 @@
 <template>
-    <tr>
-      <td class="seller">{{seller}}</td>
-      <td class="ft">{{finishTime}}</td>
-      <td class="currentb">
-        {{ current }} <br/>
-        Buyout {{ buy }}
-      </td>
-    </tr>
+  <tr>
+    <td class="seller">{{ seller }}</td>
+    <td class="ft">{{ finishTime }}</td>
+    <td class="currentb">
+      {{ current }} <br/>
+      Buyout {{ buy }}
+    </td>
+  </tr>
 </template>
 
 <script>
@@ -19,8 +19,8 @@ export default {
     return {
       seller: this.content.vendor,
       finishTime: this.content.time_end,
-        current: this.content.cost_current,
-        buy: this.content.cost_buy
+      current: this.content.cost_current,
+      buy: this.content.cost_buy
     }
   }
 }

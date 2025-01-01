@@ -14,7 +14,7 @@
     <tr v-if="errors != null">
       <td>
         <p v-for='error in errors' :key="error" class="error">
-          {{error}}
+          {{ error }}
         </p>
       </td>
     </tr>
@@ -63,19 +63,27 @@ export default {
 </script>
 
 <style scoped>
-@media (width < 877px) {
+@media (width < 877px
+
+) {
   #frame {
     width: 400px;
   }
 }
 
-@media (877px <= width < 1062px) {
+@media (877px <= width <
+
+1062px
+
+) {
   #frame {
     width: 600px;
   }
 }
 
-@media (1062px <= width) {
+@media (1062px <= width
+
+) {
   #frame {
     width: 800px;
   }
@@ -116,6 +124,7 @@ tr, td, th {
   border-radius: 12px;
   background-image: url('~@/assets/image.jpg');
 }
+
 .alr {
   color: rgb(0, 0, 0);
 }

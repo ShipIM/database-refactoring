@@ -11,7 +11,7 @@
         </div>
       </td>
       <td>
-        <personal-space-panel />
+        <personal-space-panel/>
       </td>
     </tr>
     <tr>
@@ -22,12 +22,12 @@
             <category-container v-for="category in categories"
                                 :key="category"
                                 :content="category"
-                                @emit-category="handleChoice" />
+                                @emit-category="handleChoice"/>
           </table>
         </div>
       </td>
       <td>
-        <item-table />
+        <item-table/>
       </td>
     </tr>
     <tr>
@@ -185,19 +185,27 @@ export default {
 </script>
 
 <style scoped>
-@media (width < 877px) {
+@media (width < 877px
+
+) {
   #frame {
     width: 400px;
   }
 }
 
-@media (877px <= width < 1062px) {
+@media (877px <= width <
+
+1062px
+
+) {
   #frame {
     width: 600px;
   }
 }
 
-@media (1062px <= width) {
+@media (1062px <= width
+
+) {
   #frame {
     width: 800px;
   }
@@ -247,6 +255,7 @@ div.list-wrapper {
   margin-left: 50px;
   border-radius: 4px;
 }
+
 .name3 {
   color: rgb(255, 255, 255);
   text-align: left;
@@ -260,6 +269,7 @@ div.list-wrapper {
   border-radius: 4px;
   padding: 2px 15px;
 }
+
 .reset2 {
   background-color: rgb(158, 0, 0);
   color: rgb(182, 168, 45);
@@ -267,6 +277,7 @@ div.list-wrapper {
   border-radius: 4px;
   padding: 2px 15px;
 }
+
 .next2 {
   background-color: black;
   color: white;
@@ -274,6 +285,7 @@ div.list-wrapper {
   border-radius: 4px;
   padding: 2px 10px;
 }
+
 .previous2 {
   background-color: black;
   color: white;
@@ -281,10 +293,12 @@ div.list-wrapper {
   border-radius: 4px;
   padding: 2px 10px;
 }
+
 .categories2 {
   color: white;
   padding-left: 5px;
 }
+
 ::-webkit-scrollbar {
   width: 15px;
   border-radius: 10px;
@@ -293,6 +307,7 @@ div.list-wrapper {
 ::-webkit-scrollbar-track {
   background-color: rgb(34, 23, 14)
 }
+
 ::-webkit-scrollbar-thumb {
   background-color: rgb(0, 0, 0);
   border-radius: 0px;
