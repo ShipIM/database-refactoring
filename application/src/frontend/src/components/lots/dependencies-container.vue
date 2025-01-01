@@ -1,12 +1,12 @@
 <template>
-    <tr @click="handleClick">
-      <td class="name">{{itemName}}</td>
-      <td class="nelevel">{{level}}</td>
-    </tr>
+  <tr @click="handleClick">
+    <td class="name">{{ itemName }}</td>
+    <td class="nelevel">{{ level }}</td>
+  </tr>
 </template>
 
 <script>
-import { router } from '@/router';
+import {router} from '@/router';
 
 export default {
   props: {
@@ -22,7 +22,7 @@ export default {
   methods: {
     handleClick() {
       const itemId = this.itemId
-      router.push({ name: 'lots', params: { id: itemId }})
+      router.push({name: 'lots', params: {id: itemId}})
     }
   }
 }
@@ -38,6 +38,7 @@ export default {
   border-color: rgb(54, 54, 54);
   padding: 2px 5px;
 }
+
 .nelevel {
   background-color: rgb(0, 0, 0);
   border-radius: 0px;

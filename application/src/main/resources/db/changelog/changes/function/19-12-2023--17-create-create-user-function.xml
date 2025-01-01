@@ -5,7 +5,8 @@
                    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
     <changeSet id="19-12-2023--17-create-create-user-function" author="ShipIM">
         <createProcedure>
-            CREATE OR REPLACE FUNCTION create_user(
+            CREATE
+            OR REPLACE FUNCTION create_user(
               p_login TEXT,
               p_birth_date DATE,
               p_registration_date DATE,
@@ -13,7 +14,7 @@
             ) RETURNS TABLE (login TEXT, birth_date DATE, registration_date DATE) AS $$
             BEGIN
 
-            INSERT INTO _user (login, birth_date, registration_date)
+            INSERT INTO _ user (login, birth_date, registration_date)
             VALUES (p_login, p_birth_date, p_registration_date);
 
             INSERT INTO password (user_login, password)
@@ -22,7 +23,8 @@
             RETURN QUERY SELECT login, birth_date, registration_date
                          FROM _user WHERE login = p_login;
             END;
-            $$ LANGUAGE plpgsql;
+            $$
+            LANGUAGE plpgsql;
         </createProcedure>
     </changeSet>
 </databaseChangeLog>

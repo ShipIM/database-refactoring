@@ -11,7 +11,7 @@
         </div>
       </td>
       <td>
-        <personal-space-panel />
+        <personal-space-panel/>
       </td>
     </tr>
     <tr>
@@ -22,12 +22,12 @@
             <category-container v-for="category in categories"
                                 :key="category"
                                 :content="category"
-                                @emit-category="handleChoice" />
+                                @emit-category="handleChoice"/>
           </table>
         </div>
       </td>
       <td>
-        <item-table />
+        <item-table/>
       </td>
     </tr>
     <tr>
@@ -175,19 +175,27 @@ export default {
 </script>
 
 <style scoped>
-@media (width < 877px) {
+@media (width < 877px
+
+) {
   #frame {
     width: 400px;
   }
 }
 
-@media (877px <= width < 1062px) {
+@media (877px <= width <
+
+1062px
+
+) {
   #frame {
     width: 600px;
   }
 }
 
-@media (1062px <= width) {
+@media (1062px <= width
+
+) {
   #frame {
     width: 800px;
   }
@@ -219,11 +227,13 @@ tr, td, th {
   border-radius: 12px;
   background-image: url('~@/assets/image.jpg');
 }
+
 .categories {
   color: white;
   padding-left: 5px;
- 
+
 }
+
 div.list-wrapper {
   overflow: hidden;
   overflow-y: scroll;
@@ -231,6 +241,7 @@ div.list-wrapper {
   background-color: rgb(34, 23, 14);
   color: rgb(255, 251, 0);
 }
+
 ::-webkit-scrollbar {
   width: 15px;
   border-radius: 10px;
@@ -239,6 +250,7 @@ div.list-wrapper {
 ::-webkit-scrollbar-track {
   background-color: rgb(34, 23, 14)
 }
+
 ::-webkit-scrollbar-thumb {
   background-color: rgb(0, 0, 0);
   border-radius: 0px;

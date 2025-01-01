@@ -7,10 +7,13 @@
         <createProcedure>
             CREATE FUNCTION fill_start_price() RETURNS trigger AS $$
             BEGIN
-                UPDATE lot_cost_information SET cost_current = cost_start WHERE lot_cost_information.lot_id = NEW.lot_id;
-                RETURN NEW;
+            UPDATE lot_cost_information
+            SET cost_current = cost_start
+            WHERE lot_cost_information.lot_id = NEW.lot_id;
+            RETURN NEW;
             END;
-            $$ LANGUAGE plpgsql;
+            $$
+            LANGUAGE plpgsql;
         </createProcedure>
         <rollback>
             DROP FUNCTION fill_start_price();
@@ -19,8 +22,9 @@
     <changeSet id="19-12-2023--16-create-fill-start-price-trigger-2" author="ShipIM">
         <sql>
             CREATE TRIGGER fill_start_price
-            AFTER INSERT ON lot_cost_information
-            FOR EACH ROW EXECUTE PROCEDURE fill_start_price();
+                AFTER INSERT
+                ON lot_cost_information
+                FOR EACH ROW EXECUTE PROCEDURE fill_start_price();
         </sql>
         <rollback>
             DROP TRIGGER fill_start_price ON lot_cost_information;

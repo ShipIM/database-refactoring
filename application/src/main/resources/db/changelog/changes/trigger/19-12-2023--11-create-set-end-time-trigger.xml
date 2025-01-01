@@ -7,14 +7,23 @@
         <createProcedure>
             CREATE FUNCTION set_end_time() RETURNS trigger AS $$
             BEGIN
-                IF NEW.status = 'EXPIRED'
-                THEN UPDATE lot_time_information SET time_finish = time_end WHERE lot_time_information.lot_id = NEW.lot_id;
-                ELSEIF NEW.status = 'SOLD'
-                THEN UPDATE lot_time_information SET time_finish = CURRENT_TIMESTAMP WHERE lot_time_information.lot_id = NEW.lot_id;
-                END IF;
-                RETURN NEW;
+                IF
+            NEW.status = 'EXPIRED'
+                THEN
+            UPDATE lot_time_information
+            SET time_finish = time_end
+            WHERE lot_time_information.lot_id = NEW.lot_id;
+            ELSEIF
+            NEW.status = 'SOLD'
+                THEN
+            UPDATE lot_time_information
+            SET time_finish = CURRENT_TIMESTAMP
+            WHERE lot_time_information.lot_id = NEW.lot_id;
+            END IF;
+            RETURN NEW;
             END
-            $$ LANGUAGE plpgsql;
+            $$
+            LANGUAGE plpgsql;
         </createProcedure>
         <rollback>
             DROP FUNCTION set_end_time();
@@ -23,8 +32,9 @@
     <changeSet id="19-12-2023--11-create-set-end-time-trigger-2" author="ShipIM">
         <sql>
             CREATE TRIGGER set_endtime
-            BEFORE UPDATE ON lot_status_information
-            FOR EACH ROW EXECUTE PROCEDURE set_end_time();
+                BEFORE UPDATE
+                ON lot_status_information
+                FOR EACH ROW EXECUTE PROCEDURE set_end_time();
         </sql>
         <rollback>
             DROP TRIGGER set_endtime ON lot_status_information;

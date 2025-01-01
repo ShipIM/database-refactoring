@@ -7,13 +7,14 @@
         <th @click="sortByQuality" class="quality">Quality</th>
         <th @click="sortByLevel" class="level">Level</th>
       </tr>
-      <item-container v-for="item in itemsView" :key="item" :content="item" />
+      <item-container v-for="item in itemsView" :key="item" :content="item"/>
     </table>
   </div>
 </template>
 
 <script>
 import itemContainer from "@/components/main/item-container";
+
 export default {
   inject: ['items'],
   components: {
@@ -94,18 +95,22 @@ div.table-wrapper {
   overflow-y: scroll;
   height: 300px;
 }
+
 ::-webkit-scrollbar {
   width: 15px;
   border-radius: 10px;
 }
+
 ::-webkit-scrollbar-track {
   background-color: rgb(34, 23, 14)
 }
+
 ::-webkit-scrollbar-thumb {
   background-color: rgb(0, 0, 0);
   border-radius: 0px;
   border: 1px solid rgb(54, 54, 54);
 }
+
 .name {
   color: white;
   padding-left: 5px;
@@ -118,15 +123,16 @@ div.table-wrapper {
 
 .level {
   color: white;
-  padding-right:30px;
+  padding-right: 30px;
   padding-left: 30px;
 }
 
-.items{
+.items {
   color: white;
   padding-left: 10px;
- 
+
 }
+
 .table-wrapper {
   background-color: rgb(34, 23, 14);
   color: white;

@@ -1,6 +1,6 @@
 <template>
   <div v-if="typeof(username) !== 'undefined'" class="login1">
-    <span @click="handleUsernameClick">{{username}}</span>
+    <span @click="handleUsernameClick">{{ username }}</span>
     <button v-if="$route.name === 'personal'" @click="handleLogOutClick" class="logout">Log out</button>
   </div>
   <div v-if="typeof(username) === 'undefined'">
@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import {getCookie, eraseCookie} from "@/cookies";
+import {eraseCookie, getCookie} from "@/cookies";
 import {router} from "@/router";
 
 export default {
@@ -50,6 +50,7 @@ export default {
   color: rgb(255, 255, 255);
   padding-left: 10px;
 }
+
 .logout {
   background-color: blue;
   color: rgb(182, 168, 45);

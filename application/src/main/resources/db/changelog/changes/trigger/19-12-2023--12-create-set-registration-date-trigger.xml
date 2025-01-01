@@ -7,10 +7,12 @@
         <createProcedure>
             CREATE FUNCTION set_registration_date() RETURNS trigger AS $$
             BEGIN
-                NEW.registration_date := NOW()::date;
-                RETURN NEW;
+                NEW.registration_date
+            := NOW()::date;
+            RETURN NEW;
             END;
-            $$ LANGUAGE plpgsql;
+            $$
+            LANGUAGE plpgsql;
         </createProcedure>
         <rollback>
             DROP FUNCTION set_registration_date();
@@ -19,7 +21,8 @@
     <changeSet id="19-12-2023--12-create-set-registration-date-trigger-2" author="ShipIM">
         <sql>
             CREATE TRIGGER set_registration_date
-            BEFORE INSERT ON _user
+                BEFORE INSERT
+                ON _user
             FOR EACH ROW EXECUTE PROCEDURE set_registration_date();
         </sql>
         <rollback>

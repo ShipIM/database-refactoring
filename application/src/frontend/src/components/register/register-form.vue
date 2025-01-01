@@ -39,7 +39,7 @@ export default {
     return {
       username: null,
       password: null,
-      birthDate:null,
+      birthDate: null,
 
       passwordInvalid: true,
       usernameInvalid: true,
@@ -123,7 +123,8 @@ table {
   text-align: center;
   padding: 2% 1% 1% 1%;
 }
-.register{
+
+.register {
   background-color: blue;
   color: rgb(182, 168, 45);
   margin-left: 10px;

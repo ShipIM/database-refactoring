@@ -112,6 +112,7 @@ table {
   text-align: center;
   padding: 2% 1% 1% 1%;
 }
+
 .login2 {
   background-color: blue;
   color: rgb(182, 168, 45);
