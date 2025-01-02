@@ -1,0 +1,57 @@
+version: '3'
+
+services:
+  application:
+    image: 'shipim/application:1.0.0'
+    container_name: 'application'
+    build:
+      context: .
+      dockerfile: ./application/Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - 'prometheus'
+      - 'grafana'
+      - 'postgres'
+    environment:
+      - 'SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/coursework'
+
+  prometheus:
+    image: prom/prometheus:v2.53.2
+    container_name: prometheus
+    restart: always
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus:/etc/prometheus/
+    command:
+      - '--storage.tsdb.retention.time=31d'
+      - '--storage.tsdb.retention.size=25GB'
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+
+  grafana:
+    image: grafana/grafana:11.1.4
+    container_name: grafana
+    restart: always
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+    environment:
+      TZ: "Europe/Moscow"
+      GF_SECURITY_ADMIN_PASSWORD: grafana_admin_password
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./pg-init-scripts:/docker-entrypoint-initdb.d
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_HOST_AUTH_METHOD=trust
+      - POSTGRES_MULTIPLE_DATABASES=coursework

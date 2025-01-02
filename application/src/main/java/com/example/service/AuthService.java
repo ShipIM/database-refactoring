@@ -1,5 +1,6 @@
 package com.example.service;
 
+import com.example.metrics.UserLoginAttempts;
 import com.example.model.entity.User;
 import com.example.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,8 @@ public class AuthService {
     private final DetailsService detailsService;
     private final JwtUtils jwtUtils;
 
+    private final UserLoginAttempts userLoginAttempts;
+
     /**
      * Registers a new user by encoding their password and creating the user.
      * Also generates an access token for the newly registered user.
@@ -33,6 +36,8 @@ public class AuthService {
      * @return a pair containing the registered user and their generated access token
      */
     public Pair<User, String> register(User user) {
+        userLoginAttempts.increment();
+
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         user = detailsService.createUser(user);
@@ -47,6 +52,8 @@ public class AuthService {
      * @return a pair containing the authenticated user and their generated access token
      */
     public Pair<User, String> authenticate(User user) {
+        userLoginAttempts.increment();
+
         user = (User) authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()))
                 .getPrincipal();

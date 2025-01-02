@@ -35,8 +35,8 @@ public class SecurityConfiguration {
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(matcher -> matcher
-                        .requestMatchers("/registration", "/authentication",
-                                "/v3/api-docs/**", "/swagger-ui/**")
+                        .requestMatchers("/auth/registration", "/auth/authentication",
+                                "/v3/api-docs/**", "/swagger-ui/**", "/actuator/**")
                         .permitAll()
                         .anyRequest()
                         .authenticated())
