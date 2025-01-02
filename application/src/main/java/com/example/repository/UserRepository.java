@@ -36,7 +36,6 @@ public interface UserRepository {
      * @param password         the user's password
      * @return the newly created user
      */
-    @Modifying
     @Query("select * from create_user(:login, :birth_date, :registration_date, :password)")
     User createUser(@Param("login") String login,
                     @Param("birth_date") Date birthDate,

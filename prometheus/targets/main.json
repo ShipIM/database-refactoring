@@ -1,0 +1,10 @@
+[
+    {
+      "targets": [
+        "application:8080"
+      ],
+      "labels": {
+        "env": "local docker"
+      }
+    }
+]

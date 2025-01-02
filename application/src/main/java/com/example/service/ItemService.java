@@ -1,6 +1,8 @@
 package com.example.service;
 
 import com.example.exception.EntityNotFoundException;
+import com.example.metrics.DatabaseQueriesTotal;
+import com.example.metrics.DatabaseQueryDuration;
 import com.example.model.entity.Dependency;
 import com.example.model.entity.Item;
 import com.example.model.entity.ItemsForPeriod;
@@ -31,6 +33,9 @@ public class ItemService {
     private final DependencyRepository dependencyRepository;
     private final DetailsService detailsService;
 
+    private final DatabaseQueriesTotal dbQueriesTotal;
+    private final DatabaseQueryDuration dbQueryDuration;
+
     /**
      * Retrieves a filtered list of items based on the provided name and category.
      *
@@ -40,9 +45,12 @@ public class ItemService {
      * @return a pair containing the list of items and the total count
      */
     public Pair<List<Item>, Long> getItems(String name, String category, Pageable pageable) {
-        var total = itemRepository.countFilteredItems(name, category);
-        var items = itemRepository
-                .findFilteredItems(name, category, pageable.getPageSize(), pageable.getPageNumber());
+        dbQueriesTotal.increment();
+
+        var total = dbQueryDuration.record(() -> itemRepository.countFilteredItems(name, category));
+        var items = dbQueryDuration.record(() ->
+                itemRepository.findFilteredItems(name, category, pageable.getPageSize(), pageable.getPageNumber())
+        );
 
         return Pair.of(items, total);
     }
@@ -55,8 +63,12 @@ public class ItemService {
      * @throws EntityNotFoundException if no item with the given ID is found
      */
     public Item getItem(long id) {
-        return itemRepository.findItem(id)
-                .orElseThrow(() -> new EntityNotFoundException("There is no item with such an identifier"));
+        dbQueriesTotal.increment();
+
+        return dbQueryDuration.record(() ->
+                itemRepository.findItem(id)
+                        .orElseThrow(() -> new EntityNotFoundException("There is no item with such an identifier"))
+        );
     }
 
     /**
@@ -74,9 +86,14 @@ public class ItemService {
             throw new EntityNotFoundException("There is no user with this ID");
         }
 
-        var total = itemRepository.countFavouriteItems(email, name, category);
-        var items = itemRepository
-                .findFavouriteItems(email, name, category, pageable.getPageSize(), pageable.getPageNumber());
+        dbQueriesTotal.increment();
+
+        var total = dbQueryDuration.record(() ->
+                itemRepository.countFavouriteItems(email, name, category)
+        );
+        var items = dbQueryDuration.record(() ->
+                itemRepository.findFavouriteItems(email, name, category, pageable.getPageSize(), pageable.getPageNumber())
+        );
 
         return Pair.of(items, total);
     }
@@ -97,7 +114,11 @@ public class ItemService {
             throw new EntityNotFoundException("There is no item with such an identifier");
         }
 
-        return itemRepository.isFavourite(email, id);
+        dbQueriesTotal.increment();
+
+        return dbQueryDuration.record(() ->
+                itemRepository.isFavourite(email, id)
+        );
     }
 
     /**
@@ -115,7 +136,11 @@ public class ItemService {
             throw new EntityNotFoundException("There is no item with such an identifier");
         }
 
-        itemRepository.addFavouriteItem(username, id);
+        dbQueriesTotal.increment();
+
+        dbQueryDuration.record(() ->
+                itemRepository.addFavouriteItem(username, id)
+        );
     }
 
     /**
@@ -133,7 +158,11 @@ public class ItemService {
             throw new EntityNotFoundException("There is no item with such an identifier");
         }
 
-        itemRepository.deleteFavouriteItem(username, id);
+        dbQueriesTotal.increment();
+
+        dbQueryDuration.record(() ->
+                itemRepository.deleteFavouriteItem(username, id)
+        );
     }
 
     /**
@@ -143,7 +172,11 @@ public class ItemService {
      * @return true if the item exists, false otherwise
      */
     public boolean isItemExists(long id) {
-        return itemRepository.isItemExists(id);
+        dbQueriesTotal.increment();
+
+        return dbQueryDuration.record(() ->
+                itemRepository.isItemExists(id)
+        );
     }
 
     /**
@@ -158,8 +191,12 @@ public class ItemService {
             throw new EntityNotFoundException("There is no item with such an identifier");
         }
 
-        return itemRepository.getSelfprice(id).orElseThrow(() ->
-                new EntityNotFoundException("It is impossible to calculate the self price"));
+        dbQueriesTotal.increment();
+
+        return dbQueryDuration.record(() ->
+                itemRepository.getSelfprice(id)
+                        .orElseThrow(() -> new EntityNotFoundException("It is impossible to calculate the self price"))
+        );
     }
 
     /**
@@ -177,9 +214,12 @@ public class ItemService {
             throw new EntityNotFoundException("There is no item with such an identifier");
         }
 
-        var total = itemsForPeriodRepository.countItemsForPeriod(start, end, id);
-        var itemsList = itemsForPeriodRepository
-                .getItemsForPeriod(start, end, id, pageable.getPageSize(), pageable.getPageNumber());
+        dbQueriesTotal.increment();
+
+        var total = dbQueryDuration.record(() ->
+                itemsForPeriodRepository.countItemsForPeriod(start, end, id));
+        var itemsList = dbQueryDuration.record(() ->
+                itemsForPeriodRepository.getItemsForPeriod(start, end, id, pageable.getPageSize(), pageable.getPageNumber()));
 
         return Pair.of(itemsList, total);
     }
@@ -190,7 +230,9 @@ public class ItemService {
      * @return the list of item categories
      */
     public List<String> getCategories() {
-        return itemRepository.getCategories();
+        dbQueriesTotal.increment();
+
+        return dbQueryDuration.record(itemRepository::getCategories);
     }
 
     /**
@@ -200,7 +242,9 @@ public class ItemService {
      * @return the list of categories of the user's favourite items
      */
     public List<String> getFavouritesCategories(String username) {
-        return itemRepository.getFavouritesCategories(username);
+        dbQueriesTotal.increment();
+
+        return dbQueryDuration.record(() -> itemRepository.getFavouritesCategories(username));
     }
 
     /**
@@ -216,9 +260,12 @@ public class ItemService {
             throw new EntityNotFoundException("There is no item with such an identifier");
         }
 
-        var total = lotRepository.countActiveLots(id);
-        var lots = lotRepository
-                .findActiveLots(id, pageable.getPageSize(), pageable.getPageNumber());
+        dbQueriesTotal.increment();
+
+        var total = dbQueryDuration.record(() ->
+                lotRepository.countActiveLots(id));
+        var lots = dbQueryDuration.record(() ->
+                lotRepository.findActiveLots(id, pageable.getPageSize(), pageable.getPageNumber()));
 
         return Pair.of(lots, total);
     }
@@ -236,9 +283,12 @@ public class ItemService {
             throw new EntityNotFoundException("There is no item with such an identifier");
         }
 
-        var total = dependencyRepository.getDependenciesCount(id);
-        var dependencyList = dependencyRepository
-                .getDependencies(id, pageable.getPageSize(), pageable.getPageNumber());
+        dbQueriesTotal.increment();
+
+        var total = dbQueryDuration.record(() ->
+                dependencyRepository.getDependenciesCount(id));
+        var dependencyList = dbQueryDuration.record(() ->
+                dependencyRepository.getDependencies(id, pageable.getPageSize(), pageable.getPageNumber()));
 
         return Pair.of(dependencyList, total);
     }

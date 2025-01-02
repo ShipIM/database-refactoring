@@ -1,6 +1,8 @@
 package com.example.service;
 
 import com.example.exception.EntityNotFoundException;
+import com.example.metrics.DatabaseQueriesTotal;
+import com.example.metrics.DatabaseQueryDuration;
 import com.example.model.entity.User;
 import com.example.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,9 @@ public class DetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
+    private final DatabaseQueriesTotal dbQueriesTotal;
+    private final DatabaseQueryDuration dbQueryDuration;
+
     /**
      * Loads a user by their email address.
      *
@@ -34,8 +39,10 @@ public class DetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email)
             throws UsernameNotFoundException {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new EntityNotFoundException("There is no user with this email address"));
+        dbQueriesTotal.increment();
+
+        return dbQueryDuration.record(() -> userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("There is no user with this email address")));
     }
 
     /**
@@ -45,7 +52,9 @@ public class DetailsService implements UserDetailsService {
      * @return true if the user exists, false otherwise
      */
     public boolean isUserExists(String login) {
-        return userRepository.isUserExists(login);
+        dbQueriesTotal.increment();
+
+        return dbQueryDuration.record(() -> userRepository.isUserExists(login));
     }
 
     /**
@@ -55,8 +64,10 @@ public class DetailsService implements UserDetailsService {
      * @return the created user
      */
     public User createUser(User user) {
-        return userRepository
-                .createUser(user.getEmail(), user.getBirthDate(), new Date(), user.getPassword());
+        dbQueriesTotal.increment();
+
+        return dbQueryDuration.record(() ->
+                userRepository.createUser(user.getEmail(), user.getBirthDate(), new Date(), user.getPassword()));
     }
 
 }
