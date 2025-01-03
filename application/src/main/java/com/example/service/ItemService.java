@@ -12,6 +12,7 @@ import com.example.repository.ItemRepository;
 import com.example.repository.ItemsForPeriodRepository;
 import com.example.repository.LotRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,7 @@ import java.util.List;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ItemService {
 
     private final ItemRepository itemRepository;
@@ -52,6 +54,8 @@ public class ItemService {
                 itemRepository.findFilteredItems(name, category, pageable.getPageSize(), pageable.getPageNumber())
         );
 
+        log.info("Get items");
+
         return Pair.of(items, total);
     }
 
@@ -64,6 +68,8 @@ public class ItemService {
      */
     public Item getItem(long id) {
         dbQueriesTotal.increment();
+
+        log.info("Get item with id {}", id);
 
         return dbQueryDuration.record(() ->
                 itemRepository.findItem(id)
@@ -95,6 +101,8 @@ public class ItemService {
                 itemRepository.findFavouriteItems(email, name, category, pageable.getPageSize(), pageable.getPageNumber())
         );
 
+        log.info("Get favourite item user {}", email);
+
         return Pair.of(items, total);
     }
 
@@ -115,6 +123,8 @@ public class ItemService {
         }
 
         dbQueriesTotal.increment();
+
+        log.info("Is item with id {} favourite to user {}", id, email);
 
         return dbQueryDuration.record(() ->
                 itemRepository.isFavourite(email, id)
@@ -141,6 +151,8 @@ public class ItemService {
         dbQueryDuration.record(() ->
                 itemRepository.addFavouriteItem(username, id)
         );
+        log.info("Add item with id {} to favourite to user {}", id, username);
+
     }
 
     /**
@@ -163,6 +175,8 @@ public class ItemService {
         dbQueryDuration.record(() ->
                 itemRepository.deleteFavouriteItem(username, id)
         );
+
+        log.info("Delete item with id {} from favourite to user {}", id, username);
     }
 
     /**
@@ -193,6 +207,8 @@ public class ItemService {
 
         dbQueriesTotal.increment();
 
+        log.info("Get selfprice to item with id {}", id);
+
         return dbQueryDuration.record(() ->
                 itemRepository.getSelfprice(id)
                         .orElseThrow(() -> new EntityNotFoundException("It is impossible to calculate the self price"))
@@ -220,6 +236,7 @@ public class ItemService {
                 itemsForPeriodRepository.countItemsForPeriod(start, end, id));
         var itemsList = dbQueryDuration.record(() ->
                 itemsForPeriodRepository.getItemsForPeriod(start, end, id, pageable.getPageSize(), pageable.getPageNumber()));
+        log.info("Get items from {} to {}", start, end);
 
         return Pair.of(itemsList, total);
     }
@@ -231,6 +248,7 @@ public class ItemService {
      */
     public List<String> getCategories() {
         dbQueriesTotal.increment();
+        log.info("Get item categories");
 
         return dbQueryDuration.record(itemRepository::getCategories);
     }
@@ -243,6 +261,7 @@ public class ItemService {
      */
     public List<String> getFavouritesCategories(String username) {
         dbQueriesTotal.increment();
+        log.info("Get favourite item categories to user {}", username);
 
         return dbQueryDuration.record(() -> itemRepository.getFavouritesCategories(username));
     }
@@ -266,6 +285,7 @@ public class ItemService {
                 lotRepository.countActiveLots(id));
         var lots = dbQueryDuration.record(() ->
                 lotRepository.findActiveLots(id, pageable.getPageSize(), pageable.getPageNumber()));
+        log.info("Get active lots from user {}", id);
 
         return Pair.of(lots, total);
     }
@@ -289,6 +309,7 @@ public class ItemService {
                 dependencyRepository.getDependenciesCount(id));
         var dependencyList = dbQueryDuration.record(() ->
                 dependencyRepository.getDependencies(id, pageable.getPageSize(), pageable.getPageNumber()));
+        log.info("Get dependencies to item {}", id);
 
         return Pair.of(dependencyList, total);
     }
