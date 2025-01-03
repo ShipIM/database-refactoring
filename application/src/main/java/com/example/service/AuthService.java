@@ -4,6 +4,7 @@ import com.example.metrics.UserLoginAttempts;
 import com.example.model.entity.User;
 import com.example.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,6 +20,7 @@ import java.util.Map;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuthService {
 
     private final PasswordEncoder passwordEncoder;
@@ -42,6 +44,7 @@ public class AuthService {
 
         user = detailsService.createUser(user);
 
+        log.info("Register user");
         return Pair.of(user, generateAccessToken(user));
     }
 
@@ -57,6 +60,8 @@ public class AuthService {
         user = (User) authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()))
                 .getPrincipal();
+
+        log.info("Authenticate user");
 
         return Pair.of(user, generateAccessToken(user));
     }

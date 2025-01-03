@@ -12,7 +12,9 @@ import com.example.repository.ItemRepository;
 import com.example.repository.ItemsForPeriodRepository;
 import com.example.repository.LotRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +27,7 @@ import java.util.List;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ItemService {
 
     private final ItemRepository itemRepository;
@@ -44,6 +47,7 @@ public class ItemService {
      * @param pageable pagination details
      * @return a pair containing the list of items and the total count
      */
+    @Cacheable("items")
     public Pair<List<Item>, Long> getItems(String name, String category, Pageable pageable) {
         dbQueriesTotal.increment();
 
@@ -51,6 +55,8 @@ public class ItemService {
         var items = dbQueryDuration.record(() ->
                 itemRepository.findFilteredItems(name, category, pageable.getPageSize(), pageable.getPageNumber())
         );
+
+        log.info("Get items");
 
         return Pair.of(items, total);
     }
@@ -62,8 +68,11 @@ public class ItemService {
      * @return the item with the specified ID
      * @throws EntityNotFoundException if no item with the given ID is found
      */
+    @Cacheable("item")
     public Item getItem(long id) {
         dbQueriesTotal.increment();
+
+        log.info("Get item with id {}", id);
 
         return dbQueryDuration.record(() ->
                 itemRepository.findItem(id)
@@ -81,6 +90,7 @@ public class ItemService {
      * @return a pair containing the list of favourite items and the total count
      * @throws EntityNotFoundException if the user does not exist
      */
+    @Cacheable("fav_items")
     public Pair<List<Item>, Long> getFavouriteItems(String email, String name, String category, Pageable pageable) {
         if (!detailsService.isUserExists(email)) {
             throw new EntityNotFoundException("There is no user with this ID");
@@ -95,6 +105,8 @@ public class ItemService {
                 itemRepository.findFavouriteItems(email, name, category, pageable.getPageSize(), pageable.getPageNumber())
         );
 
+        log.info("Get favourite item user {}", email);
+
         return Pair.of(items, total);
     }
 
@@ -106,6 +118,7 @@ public class ItemService {
      * @return true if the item is a favourite, false otherwise
      * @throws EntityNotFoundException if the user or item does not exist
      */
+    @Cacheable("is_fav")
     public boolean isFavourite(String email, long id) {
         if (!detailsService.isUserExists(email)) {
             throw new EntityNotFoundException("There is no user with this ID");
@@ -115,6 +128,8 @@ public class ItemService {
         }
 
         dbQueriesTotal.increment();
+
+        log.info("Is item with id {} favourite to user {}", id, email);
 
         return dbQueryDuration.record(() ->
                 itemRepository.isFavourite(email, id)
@@ -141,6 +156,8 @@ public class ItemService {
         dbQueryDuration.record(() ->
                 itemRepository.addFavouriteItem(username, id)
         );
+        log.info("Add item with id {} to favourite to user {}", id, username);
+
     }
 
     /**
@@ -163,6 +180,8 @@ public class ItemService {
         dbQueryDuration.record(() ->
                 itemRepository.deleteFavouriteItem(username, id)
         );
+
+        log.info("Delete item with id {} from favourite to user {}", id, username);
     }
 
     /**
@@ -186,12 +205,15 @@ public class ItemService {
      * @return the self-price of the item
      * @throws EntityNotFoundException if the item does not exist or the self-price cannot be calculated
      */
+    @Cacheable("self_price")
     public long getSelfPrice(long id) {
         if (!isItemExists(id)) {
             throw new EntityNotFoundException("There is no item with such an identifier");
         }
 
         dbQueriesTotal.increment();
+
+        log.info("Get selfprice to item with id {}", id);
 
         return dbQueryDuration.record(() ->
                 itemRepository.getSelfprice(id)
@@ -209,6 +231,7 @@ public class ItemService {
      * @return a pair containing the list of items for the period and the total count
      * @throws EntityNotFoundException if the item does not exist
      */
+    @Cacheable("items_period")
     public Pair<List<ItemsForPeriod>, Long> getItemsForPeriod(LocalDate start, LocalDate end, long id, Pageable pageable) {
         if (!isItemExists(id)) {
             throw new EntityNotFoundException("There is no item with such an identifier");
@@ -220,6 +243,7 @@ public class ItemService {
                 itemsForPeriodRepository.countItemsForPeriod(start, end, id));
         var itemsList = dbQueryDuration.record(() ->
                 itemsForPeriodRepository.getItemsForPeriod(start, end, id, pageable.getPageSize(), pageable.getPageNumber()));
+        log.info("Get items from {} to {}", start, end);
 
         return Pair.of(itemsList, total);
     }
@@ -229,8 +253,10 @@ public class ItemService {
      *
      * @return the list of item categories
      */
+    @Cacheable("categories")
     public List<String> getCategories() {
         dbQueriesTotal.increment();
+        log.info("Get item categories");
 
         return dbQueryDuration.record(itemRepository::getCategories);
     }
@@ -241,8 +267,10 @@ public class ItemService {
      * @param username the user's email address
      * @return the list of categories of the user's favourite items
      */
+    @Cacheable("fav_categories")
     public List<String> getFavouritesCategories(String username) {
         dbQueriesTotal.increment();
+        log.info("Get favourite item categories to user {}", username);
 
         return dbQueryDuration.record(() -> itemRepository.getFavouritesCategories(username));
     }
@@ -255,6 +283,7 @@ public class ItemService {
      * @return a pair containing the list of active lots and the total count
      * @throws EntityNotFoundException if the item does not exist
      */
+    @Cacheable("active_lots")
     public Pair<List<Lot>, Long> getActiveLots(long id, Pageable pageable) {
         if (!isItemExists(id)) {
             throw new EntityNotFoundException("There is no item with such an identifier");
@@ -266,6 +295,7 @@ public class ItemService {
                 lotRepository.countActiveLots(id));
         var lots = dbQueryDuration.record(() ->
                 lotRepository.findActiveLots(id, pageable.getPageSize(), pageable.getPageNumber()));
+        log.info("Get active lots from user {}", id);
 
         return Pair.of(lots, total);
     }
@@ -278,6 +308,7 @@ public class ItemService {
      * @return a pair containing the list of dependencies and the total count
      * @throws EntityNotFoundException if the item does not exist
      */
+    @Cacheable("dependencies")
     public Pair<List<Dependency>, Long> getDependencies(long id, Pageable pageable) {
         if (!isItemExists(id)) {
             throw new EntityNotFoundException("There is no item with such an identifier");
@@ -289,6 +320,7 @@ public class ItemService {
                 dependencyRepository.getDependenciesCount(id));
         var dependencyList = dbQueryDuration.record(() ->
                 dependencyRepository.getDependencies(id, pageable.getPageSize(), pageable.getPageNumber()));
+        log.info("Get dependencies to item {}", id);
 
         return Pair.of(dependencyList, total);
     }
